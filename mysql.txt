@@ -1,0 +1,286 @@
+
+-----------------------PROJECTX common tables----------------------------------
+
+CREATE TABLE projectx.`users` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL,
+  `password_hash` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ;
+
+CREATE TABLE `projectx`.`roles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `role` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+insert into projectx.roles (role) values ('user');
+insert into projectx.roles (role) values ('admin');
+insert into projectx.roles (role) values ('manager');
+
+CREATE TABLE projectx.`users_roles` (
+  `user_id` int NOT NULL,
+  `role_id` int NOT NULL,
+  PRIMARY KEY (`user_id`,`role_id`),
+  KEY `role_id` (`role_id`),
+  CONSTRAINT `users_roles_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`),
+  CONSTRAINT `users_roles_ibfk_2` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`)
+) ;
+
+
+CREATE TABLE `projectx`.`permissions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `permission` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0;
+
+insert into projectx.permissions(permission) values('read_data');
+insert into projectx.permissions(permission) values('edit_data');
+insert into projectx.permissions(permission) values('manage_users');
+insert into projectx.permissions(permission) values('approve_requests');
+
+CREATE TABLE `projectx`.`role_permissions` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `role_id` int DEFAULT NULL,
+  `permission_id` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `role_id` (`role_id`),
+  KEY `permission_id` (`permission_id`),
+  CONSTRAINT `role_permissions_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`),
+  CONSTRAINT `role_permissions_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=0;
+
+CREATE TABLE projectx.DISTRICT (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),   
+    state VARCHAR(255),
+    country VARCHAR(255)  
+);
+
+CREATE TABLE projectx.STATE (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),  
+    country VARCHAR(255),
+    f_name VARCHAR(255) 
+);
+CREATE TABLE projectx.COUNTRY (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255), 
+	s_name VARCHAR(255) 
+);
+
+------------- Project X Proprietery tables------------------------
+
+CREATE TABLE projectx.lead_type (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+   lead_type VARCHAR(255)
+);
+
+insert into projectx.lead_type (lead_type) values('ONLINE');
+insert into projectx.lead_type (lead_type) values('ADVERTISING');
+insert into projectx.lead_type (lead_type) values('FORM PLATE');
+insert into projectx.lead_type (lead_type) values('FRIENDS');
+insert into projectx.lead_type (lead_type) values('CANVASING');
+insert into projectx.lead_type (lead_type) values('PHONECALL');
+insert into projectx.lead_type (lead_type) values('REFFERAL');
+
+CREATE TABLE projectx.Leads (
+    lead_id INT AUTO_INCREMENT PRIMARY KEY,
+    lead_name VARCHAR(100),
+    contact_email VARCHAR(100),
+    phone_number VARCHAR(20),
+    lead_status ENUM('New', 'Qualified', 'Converted') DEFAULT 'New',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO projectx.leads (lead_name, contact_email, phone_number, lead_status) values('close friend','raja_pinja@yahoo.com',9347160365,'Qualified');
+
+CREATE TABLE `projectx`.`customers` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(255) DEFAULT NULL,
+  `last_name` varchar(255) DEFAULT NULL,
+  `phone_number` bigint DEFAULT '9347160365',
+  `lead_id` INT,
+  `email` VARCHAR(100),
+  `project_name` varchar(255) DEFAULT NULL,
+  `booking_date` date DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `district` varchar(255) DEFAULT NULL,
+  `state` varchar(255) DEFAULT NULL,
+  `country` varchar(255) DEFAULT NULL,
+  `identity_type` varchar(255) DEFAULT NULL,
+  `identity_number` bigint DEFAULT NULL,  
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (lead_id) REFERENCES Leads(lead_id)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE projectx.opportunities (
+    opportunity_id INT PRIMARY KEY AUTO_INCREMENT,
+    lead_id INT, -- Foreign key referencing leads table
+    opportunity_name VARCHAR(100),
+    opportunity_status ENUM('Open', 'Closed', 'Won', 'Lost') DEFAULT 'Open',
+    -- Additional opportunity-related fields
+    FOREIGN KEY (lead_id) REFERENCES leads (lead_id)
+);
+
+
+
+-----------lead converted to customer----------------
+
+CREATE TABLE projectx.customer (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255),
+	last_name VARCHAR(255),
+    age INT,   
+    DateOfBirth DATE,
+    project_name VARCHAR(255),  
+    address VARCHAR(255),
+    district VARCHAR(255),
+    state VARCHAR(255),
+    country VARCHAR(255),
+    identity_type VARCHAR(255),
+    identity_number INT
+);
+
+CREATE TABLE projectx.identityproof (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+   identity_type VARCHAR(255)
+);
+
+insert into projectx.identityproof (identity_type) values('AADHAR');
+insert into projectx.identityproof (identity_type) values('PASSPORT');
+insert into projectx.identityproof (identity_type) values('VOTER ID');
+insert into projectx.identityproof (identity_type) values('DRIVING LICENSE');
+insert into projectx.identityproof (identity_type) values('EMPLOYEE ID');
+insert into projectx.identityproof (identity_type) values('PAN CARD');
+
+CREATE TABLE projectx.asset_type (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+   asset_type VARCHAR(255)
+);
+
+insert into projectx.asset_type (asset_type) values('PLOT');
+insert into projectx.asset_type (asset_type) values('FLAT');
+insert into projectx.asset_type (asset_type) values('FARM LAND');
+insert into projectx.asset_type (asset_type) values('INDIVIDUAL HOUSE');
+insert into projectx.asset_type (asset_type) values('VILLA');
+insert into projectx.asset_type (asset_type) values('COMMERCIAL PROPERTY');
+insert into projectx.asset_type (asset_type) values('FARMHOUSE');
+
+CREATE TABLE projectx.booking (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255),
+	  last_name VARCHAR(255),   
+    project_name VARCHAR(255),    
+    booking_date DATE,
+    plot_number INT,   
+    asset_type  VARCHAR(255),
+    down_payment_amount DECIMAL(15, 2),
+    payment_type  VARCHAR(255)
+);
+
+CREATE TABLE projectx.asset (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255),
+	last_name VARCHAR(255),  
+    plot_number INT,   
+    project_name VARCHAR(255),
+    builder_name VARCHAR(255),
+    booking_date DATE,
+    assets_value DECIMAL(15, 2),  
+    asset_type VARCHAR(255)
+    );
+
+CREATE TABLE projectx.payment (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(255),
+	last_name VARCHAR(255),  
+	down_payment_amount DECIMAL(15, 2),  
+    payment_type VARCHAR(255),
+    payment_date DATE
+);
+
+CREATE TABLE projectx.project (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    project_name VARCHAR(255),
+    builder_name VARCHAR(255),	
+    launch_date DATE,
+    completion_date DATE,
+    possession_date DATE,
+    address VARCHAR(255),
+    district VARCHAR(255),
+    state VARCHAR(255),
+    country VARCHAR(255)
+);
+
+CREATE TABLE projectx.builder (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    project_name VARCHAR(255),
+    builder_name VARCHAR(255),    
+    address VARCHAR(255),
+    district VARCHAR(255),
+    state VARCHAR(255),
+    country VARCHAR(255)
+);
+
+-- Inserting fetched data into projectx.district
+INSERT INTO projectx.district (name, state, country)
+SELECT name, state, country FROM politico.district;
+
+CREATE TABLE projectx.STATE (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255),  
+    country VARCHAR(255)  
+);
+CREATE TABLE projectx.COUNTRY (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255)    
+);
+
+------------------------Insertions Statements--------------------------------------
+insert into projectx.state (name) values('TS');
+
+insert into politico.country (name) values('INDIA');
+-------------Copy data from 13cardsgmae users, roles, permissions, user-roles, and role_permissions tables position_acquired_in_constitution
+                politico users, roles, permissions, user-roles, and role_permissions tables --------------------------------------
+SET FOREIGN_KEY_CHECKS = 0;
+
+INSERT INTO projectx.users (id, username, password_hash, email)
+SELECT username, password_hash, email
+FROM 13cardsgmae.users;
+
+SET FOREIGN_KEY_CHECKS = 1; -- Enable foreign key checks
+
+ALTER TABLE politico.constitution
+ADD reserved VARCHAR(255);
+
+
+ALTER TABLE politico.constitution
+ADD c_number INT;
+
+ALTER TABLE politico.constitution
+DROP COLUMN c_number;
+
+ALTER TABLE politico.constitution
+ADD YEAR YEAR default 2023;
+
+--- Duplicate records ------------------
+SELECT name, COUNT(*) AS occurrences
+FROM constitution
+GROUP BY name
+HAVING COUNT(*) > 1;
+
+ALTER TABLE politico.results
+ADD result_year YEAR default 2023;
+
+ALTER TABLE politico.results
+ADD con_type VARCHAR(255) default 'MLA';
+
+ALTER TABLE projectx.state
+ADD f_name VARCHAR(255) default 'TELANGANA';
+
+ALTER TABLE projectx.country
+ADD s_name VARCHAR(255) default 'IND';

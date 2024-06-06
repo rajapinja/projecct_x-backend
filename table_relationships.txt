@@ -1,0 +1,30 @@
+Tables with Relationships:
+Customer Table
+
+    project_name in the customer table seems to relate to the project_name in the project table. This implies a relationship where a customer is associated with a project.
+
+Asset Table
+
+    project_name in the asset table seems to relate to the project_name in the project table. This suggests that an asset is associated with a particular project.
+    builder_name in the asset table seems to relate to the builder_name in the builder table. This indicates that an asset is linked to a builder.
+
+Payment Table
+
+    first_name and last_name in the payment table might relate to first_name and last_name in the customer table, indicating that a payment is associated with a customer.
+
+Project Table
+
+    builder_name in the project table seems to relate to the builder_name in the builder table. This signifies that a project is linked to a builder.
+
+Builder Table
+
+    No direct relationships are established from this table to others, but it appears to contain information about the builders involved in projects.
+
+Relationships:
+
+    A Customer is associated with a Project.
+    An Asset is associated with a Project and linked to a Builder.
+    A Payment is associated with a Customer.
+    A Project is associated with a Builder.
+
+This interpretation assumes certain relationships based on the common fields present in the tables. The relationship types (such as one-to-one, one-to-many, or many-to-many) could be established by defining foreign keys in the respective tables based on the primary keys of related tables. For instance, foreign keys like project_id, customer_id, builder_id, etc., can be added to establish these relationships formally.
